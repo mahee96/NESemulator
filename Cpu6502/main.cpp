@@ -204,8 +204,8 @@ public:
 				fResidualTime -= fElapsedTime;
 			else {
 				fResidualTime += (1.0f / 60.0f) - fElapsedTime;
-				do { nes.clock(); } while (!nes.gpu.mFrame_complete);	//if host is faster FPS could spike
-				nes.gpu.mFrame_complete = false;
+				do { nes.clock(); } while (!nes.gpu.frame_complete);	//if host is faster FPS could spike
+				nes.gpu.frame_complete = false;
 			}
 		}
 		else {
@@ -219,10 +219,10 @@ public:
 
 			if (GetKey(olc::Key::F).bPressed) {	//Handle "F" Key press
 				//clock enough to execute 1 whole Frame
-				do { nes.clock(); } while (!nes.gpu.mFrame_complete);
+				do { nes.clock(); } while (!nes.gpu.frame_complete);
 				//use residual clock cycles to complete current instruction
-				do { nes.clock(); } while (!nes.gpu.mFrame_complete);
-				nes.gpu.mFrame_complete = false;
+				do { nes.clock(); } while (!nes.gpu.frame_complete);
+				nes.gpu.frame_complete = false;
 			}
 		}
 		if (GetKey(olc::Key::R).bPressed) {	nes.reset();}							//Handle "C" Key press
@@ -273,8 +273,7 @@ public:
 };
 
 
-int main()
-{
+int main() {
 	Debugger session;
 	session.Construct(780, 480, 2, 2);
 	session.Start();

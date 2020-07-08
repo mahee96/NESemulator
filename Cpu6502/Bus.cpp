@@ -48,6 +48,13 @@ void Bus::insertCartridge(const std::shared_ptr<Cartridge>& cartridge){
 void Bus::reset(){
 	cpu.reset();										//reset cpu state
 	systemClockCounter = 0;							//reset System Bus clock
+	cartridge->reset();
+	gpu.reset();
+	dma_page = 0x00;
+	dma_addr = 0x00;
+	dma_data = 0x00;
+	dma_dummy = true;
+	dma_transfer = false;
 }
 
 void Bus::clock(){
@@ -77,9 +84,9 @@ void Bus::clock(){
 			cpu.clock();								//cpu clock is 3 times slower than gpu clock
 		}
 	}
-	if (gpu.mNmi) {									//gpu signalled mNmi for cpu?
-		gpu.mNmi = false;								//reset state
-		cpu.nmi();										//percolate signal to cpu mNmi pin
+	if (gpu.nmi) {									//gpu signalled nmi for cpu?
+		gpu.nmi = false;								//reset state
+		cpu.nmi();										//percolate signal to cpu nmi pin
 	}
 
 	systemClockCounter++;								//System Bus clock cycle++

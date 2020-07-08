@@ -3,7 +3,17 @@
 Mapper::Mapper(uint8_t prgBanks, uint8_t chrBanks){
 	nPRGBanks = prgBanks;
 	nCHRBanks = chrBanks;
+	this->reset();
 }
 
-Mapper::~Mapper(){
-}
+Mapper::~Mapper(){}
+
+void Mapper::reset() {}
+
+MIRROR Mapper::mirror() { return MIRROR::HARDWARE;}
+
+bool Mapper::irqState(){ return false; }
+
+void Mapper::irqClear(){}
+
+void Mapper::scanline(){}

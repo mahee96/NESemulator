@@ -7,9 +7,10 @@ public:
     ~Mapper_000();
 
     // Inherited via Mapper
-    virtual bool cpuMapRead(const uint16_t addr, uint32_t& mapped_addr) override;
-    virtual bool cpuMapWrite(const uint16_t addr, uint32_t& mapped_addr) override;
-    virtual bool gpuMapRead(const uint16_t addr, uint32_t& mapped_addr) override;
-    virtual bool gpuMapWrite(const uint16_t addr, uint32_t& mapped_addr) override;
+    bool cpuMapRead(const uint16_t addr, uint32_t& mapped_addr, uint8_t &data) override;
+    bool cpuMapWrite(const uint16_t addr, uint32_t& mapped_addr, const uint8_t data = 0) override;
+    bool gpuMapRead(const uint16_t addr, uint32_t& mapped_addr) override;
+    bool gpuMapWrite(const uint16_t addr, uint32_t& mapped_addr) override;
+    void reset() override;
 };
 

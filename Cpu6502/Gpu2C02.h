@@ -12,11 +12,12 @@ private:
 
 	uint8_t address_latch = 0x00;
 	uint8_t gpu_data_buffer = 0x00;
-	uint16_t gpu_address = 0x0000;
+	//uint16_t gpu_address = 0x0000;
 
 	int16_t scanline = 0;	//row of screen
 	int16_t cycle = 0;		//col of screen
-	
+	bool odd_frame = false;
+
 	bool bSpriteZeroHitPossible = false;
 	bool bSpriteZeroBeingRendered = false;
 
@@ -112,8 +113,9 @@ public:
 	uint8_t sprite_shifter_pattern_lo[8];
 	uint8_t sprite_shifter_pattern_hi[8];
 
-	bool mFrame_complete = false;
-	bool mNmi = false;
+	bool frame_complete = false;
+	bool nmi = false;
+	bool scanline_trigger = false;
 
 	Gpu2C02();
 	~Gpu2C02();
@@ -132,6 +134,7 @@ public:
 	olc::Pixel&  GetColorFromPaletteRam(const uint8_t palette, const uint8_t pixel);
 	
 	void connectCartridge(const std::shared_ptr<Cartridge>& cartridge);
-	void clock();
+	void clock(); 
+	void reset();
 };
 
