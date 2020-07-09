@@ -144,6 +144,7 @@ public:
 
 		
 		//cartridge = std::make_shared<Cartridge>("nestest.nes");
+		//cartridge = std::make_shared<Cartridge>("ai4.nes");
 		cartridge = std::make_shared<Cartridge>("smb.nes");
 		//cartridge = std::make_shared<Cartridge>("dk.nes");
 		nes.insertCartridge(cartridge);

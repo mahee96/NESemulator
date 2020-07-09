@@ -649,7 +649,7 @@ void Gpu2C02::reset(){
 
 olc::Sprite& Gpu2C02::GetScreen(){ return this->spriteScreen; }
 
-olc::Sprite& Gpu2C02::GetNameTable(const uint8_t i){ return spriteNameTable[i];}
+olc::Sprite& Gpu2C02::GetNameTable(const uint8_t i){ return spriteNameTable[i]; }
 
 olc::Sprite& Gpu2C02::GetPatternTable(const uint8_t i, const uint8_t palette){
 	for (uint16_t nTileY = 0; nTileY < 16; nTileY++) {
