@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Apu2A03.h" />
     <ClInclude Include="Bus.h" />
     <ClInclude Include="Cartridge.h" />
     <ClInclude Include="Cpu6502.h" />
@@ -30,9 +31,11 @@
     <ClInclude Include="Mapper_003.h" />
     <ClInclude Include="Mapper_004.h" />
     <ClInclude Include="Mapper_066.h" />
+    <ClInclude Include="olcPGEX_Sound.h" />
     <ClInclude Include="olcPixelGameEngine.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Apu2A03.cpp" />
     <ClCompile Include="Bus.cpp" />
     <ClCompile Include="Cartridge.cpp" />
     <ClCompile Include="Cpu6502.cpp" />

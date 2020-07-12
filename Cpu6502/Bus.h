@@ -5,6 +5,7 @@
 
 #include "Cpu6502.h"
 #include "Gpu2C02.h"
+#include "Apu2A03.h"
 #include "Cartridge.h"
 
 class Bus
@@ -20,14 +21,23 @@ private:
 	bool dma_transfer = false;
 	bool dma_dummy = true;
 
+	double dAudioTime = 0.0;
+	double dAudioGlobalTime = 0.0;
+	double dAudioTimePerNESClock = 0.0;
+	double dAudioTimePerSystemSample = 0.0f;
+
 public:
 	// Devices on bus
 	Cpu6502 cpu;
 	Gpu2C02 gpu;
+	Apu2A03 apu;
 	uint8_t mController[2];	//instantaneous state of 2 controllers
 	std::shared_ptr<Cartridge> cartridge;
 	// System Ram - 2 KB
 	std::array<uint8_t, 0x2048> systemRAM = { 0 };
+
+	void SetSampleFrequency(uint32_t sample_rate);
+	double dAudioSample = 0.0;
 
 	// Fake RAM for this part of the series
 	//std::array<uint8_t, 0xFFFF> cpuRam = { 0 };	//full addressable range of CPU
@@ -41,6 +51,6 @@ public:
 
 	void insertCartridge(const std::shared_ptr<Cartridge>& cartridge);
 	void reset();
-	void clock();
+	bool clock();
 };
 

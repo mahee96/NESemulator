@@ -51,6 +51,12 @@
     <ClInclude Include="Mapper_004.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Apu2A03.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="olcPGEX_Sound.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bus.cpp">
@@ -87,6 +93,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Mapper_003.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Apu2A03.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

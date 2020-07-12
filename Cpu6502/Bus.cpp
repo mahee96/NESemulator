@@ -11,12 +11,21 @@ Bus::Bus(){
 
 Bus::~Bus(){}
 
+void Bus::SetSampleFrequency(uint32_t sample_rate)
+{
+	dAudioTimePerSystemSample = 1.0 / (double)sample_rate;
+	dAudioTimePerNESClock = 1.0 / 5369318.0; // PPU Clock Frequency
+}
+
 void Bus::cpuBusWrite(const uint16_t addr, const uint8_t data){
 	if (cartridge->cpuBusWrite(addr, data)) return;		//event handled? then exit
 	else if (addr >= 0x0000 && addr <= 0x1FFF)				//8KB System RAM ?
 		systemRAM[addr & 0x7FF] = data;						//masking to same loc
 	else if (addr >= 0x2000 && addr <= 0x3FFF)				//gpu RAMs?
 		gpu.cpuBusWrite(addr & 0x0007, data);				//write gpu regs
+	else if ((addr >= 0x4000 && addr <= 0x4013) || addr == 0x4015 || addr == 0x4017){ //  NES APU
+		apu.cpuBusWrite(addr, data);
+	}
 	else if (addr == 0x4014) {								//DMA reg for CPU's ram to GPU's OAM transfer 
 		dma_page = data;
 		dma_addr = 0x00;
@@ -33,6 +42,8 @@ uint8_t Bus::cpuBusRead(const uint16_t addr, const bool bReadOnly) {
 		data = systemRAM[addr & 0x7FF];						//masking to same loc
 	else if (addr >= 0x2000 && addr <= 0x3FFF) 				//gpu RAMs?
 		data = gpu.cpuBusRead(addr & 0x0007, bReadOnly);	//read gpu regs
+	else if (addr == 0x4015)	// APU Read Status
+		data = apu.cpuBusRead(addr);
 	else if (addr >= 0x4016 && addr <= 0x4017){				//controllers?
 		data = (controllerState[addr & 0x0001] & 0x80) > 0; //save state into a shift reg
 		controllerState[addr & 0x0001] <<= 1;	
@@ -57,8 +68,11 @@ void Bus::reset(){
 	dma_transfer = false;
 }
 
-void Bus::clock(){
+bool Bus::clock(){
 	gpu.clock();										//gpu clock cycle++
+	// ...also clock the APU
+	apu.clock();
+
 	if (systemClockCounter % 3 == 0) {					//cpu cycle = gpu_cycle/3 (3 times slower) 
 		if (dma_transfer) {								//DMA request on 0x4014? skip cpu clock++ (suspended)
 			if (dma_dummy) {							//(DMA)cleanup idle time enabled after completion?
@@ -84,11 +98,28 @@ void Bus::clock(){
 			cpu.clock();								//cpu clock is 3 times slower than gpu clock
 		}
 	}
+	// Synchronising with Audio
+	bool bAudioSampleReady = false;
+	dAudioTime += dAudioTimePerNESClock;
+	if (dAudioTime >= dAudioTimePerSystemSample)
+	{
+		dAudioTime -= dAudioTimePerSystemSample;
+		dAudioSample = apu.GetOutputSample();
+		bAudioSampleReady = true;
+	}
+
 	if (gpu.nmi) {									//gpu signalled nmi for cpu?
 		gpu.nmi = false;								//reset state
 		cpu.nmi();										//percolate signal to cpu nmi pin
 	}
+	// Check if cartridge is requesting IRQ
+	if (cartridge->GetMapper()->irqState())
+	{
+		cartridge->GetMapper()->irqClear();
+		cpu.irq();
+	}
 
 	systemClockCounter++;								//System Bus clock cycle++
+	return bAudioSampleReady;
 }
 
